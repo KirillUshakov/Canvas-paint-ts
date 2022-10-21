@@ -42,7 +42,7 @@ import Board from '@/classes/board/board';
 
 @Component
 export default class PaintPanel extends Vue {
-  @Prop(Board) board: Board = new Board('Undefined', new HTMLCanvasElement())
+  @Prop(Board) board: Board
 }
 </script>
 

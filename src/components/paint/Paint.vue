@@ -19,14 +19,12 @@ import Board from '@/classes/board/board';
   }
 })
 export default class Paint extends Vue {
-  @Ref('canvas') readonly boardRef: HTMLCanvasElement = new HTMLCanvasElement();
+  @Ref('canvas') readonly boardRef: HTMLCanvasElement
 
-  get board ():Board {
-    return new Board('Default', this.boardRef);
-  }
+  board: Board = new Board('Default', document.createElement('canvas'));
 
   mounted () {
-    console.log(this.boardRef);
+    this.board = new Board('Default', this.boardRef);
   }
 }
 </script>
