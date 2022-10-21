@@ -3,24 +3,38 @@ import board from '@/classes/board/board';
 
 export default class Tool implements toolInterface {
   name:string;
-  icon:string;
+  iconClass:string;
   board: board;
+  ctx: any;
+  mouseX: number;
+  mouseY: number;
 
-  constructor (name:string, icon:string, board:board) {
+  canDraw = false;
+
+  constructor (name:string, iconClass:string, board:board) {
     this.name = name;
-    this.icon = icon;
+    this.iconClass = iconClass;
     this.board = board;
+    this.ctx = this.board.canvas.getContext('2d');
   }
 
-  startDraw(): void {
-    console.log('start draw');
+  setMouseValues (x: number, y: number): void {
+    this.mouseX = x;
+    this.mouseY = y;
   }
 
-  draw(): void {
-    console.log('drawing');
+  startDrawFromPoint (mouseX: number, mouseY: number) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(mouseX, mouseY);
   }
 
-  endDraw(): void {
-    console.log('end draw');
+  endDraw (): void {
+    this.ctx.closePath();
   }
+
+  mousedown (mouseX : number, mouseY : number): void {}
+  mousemove (mouseX : number, mouseY : number): void {}
+  mouseup (mouseX : number, mouseY : number): void {}
+  startDraw (): void {}
+  draw (): void {}
 }
