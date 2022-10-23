@@ -37,6 +37,7 @@ import Eraser from '@/classes/tools/brushes/eraser';
 import Line from '@/classes/tools/shapes/line';
 import Circle from '@/classes/tools/shapes/circle';
 import Rectangle from '@/classes/tools/shapes/rectangle';
+import Fill from '@/classes/tools/pointTools/fill';
 
 @Component
 export default class PaintPanel extends Vue {
@@ -51,6 +52,7 @@ export default class PaintPanel extends Vue {
   circle: Circle;
   rectangle: Rectangle;
   eraser: Eraser;
+  fill: Fill;
   // =============
 
   mounted () {
@@ -64,13 +66,15 @@ export default class PaintPanel extends Vue {
     this.circle = new Circle('Circle', 'circle', this.board);
     this.rectangle = new Rectangle('Rectangle', 'rectangle', this.board);
     this.eraser = new Eraser('Eraser', 'eraser', this.board);
+    this.fill = new Fill('Fill', 'fill', this.board);
 
     this.toolList = [
       this.pen,
       this.line,
       this.circle,
       this.rectangle,
-      this.eraser
+      this.eraser,
+      this.fill
     ];
   }
 

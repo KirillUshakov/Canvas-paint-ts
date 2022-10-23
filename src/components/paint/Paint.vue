@@ -217,6 +217,12 @@ export default class Paint extends Vue {
       }
     }
 
+    &--fill {
+      &::before {
+        background-image: url('../../assets/images/tools/fill.svg');
+      }
+    }
+
     &--clear {
       margin-right: 0;
       margin-left: auto;
