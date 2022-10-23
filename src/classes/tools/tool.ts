@@ -9,7 +9,8 @@ export default class Tool implements toolInterface {
   mouseX: number;
   mouseY: number;
 
-  canDraw = false;
+  mouseOverBoard = false;
+  isDrawing = false;
 
   constructor (name:string, iconClass:string, board:board) {
     this.name = name;
@@ -28,6 +29,14 @@ export default class Tool implements toolInterface {
     this.ctx.moveTo(mouseX, mouseY);
   }
 
+  mouseover (mouseX : number, mouseY : number): void {
+    this.mouseOverBoard = true;
+  }
+
+  mouseout (mouseX : number, mouseY : number): void {
+    this.mouseOverBoard = false;
+  }
+
   endDraw (): void {
     this.ctx.closePath();
   }
@@ -35,6 +44,7 @@ export default class Tool implements toolInterface {
   mousedown (mouseX : number, mouseY : number): void {}
   mousemove (mouseX : number, mouseY : number): void {}
   mouseup (mouseX : number, mouseY : number): void {}
+  dbclick (mouseX : number, mouseY : number): void {}
   startDraw (): void {}
   draw (): void {}
 }

@@ -5,18 +5,21 @@ export default interface tool {
   iconClass: string,
   board: board,
   ctx: CanvasRenderingContext2D;
-  canDraw: boolean;
+  isDrawing: boolean;
   mouseX: number;
   mouseY: number;
 
   mousedown (mouseX: number, mouseY: number): void,
   mouseup (mouseX: number, mouseY: number): void,
   mousemove (mouseX: number, mouseY: number): void,
+  mouseover (mouseX: number, mouseY: number): void,
+  mouseout (mouseX: number, mouseY: number): void,
+  dbclick (mouseX: number, mouseY: number): void,
 
   startDraw (): void,
   draw (): void,
   endDraw (): void,
 
-  setMouseValues(x: number, y: number): void
+  setMouseValues(x: number, y: number): void,
   startDrawFromPoint (mouseX: number, mouseY: number): void
 }
