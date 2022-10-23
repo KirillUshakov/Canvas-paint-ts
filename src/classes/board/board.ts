@@ -9,6 +9,14 @@ export default class Board implements boardInterface {
     this.name = name;
     this.canvas = canvas;
     this.ctx = this.canvas.getContext('2d');
+
+    if (!this.ctx) {
+      return;
+    }
+
+    this.ctx.lineWidth = 5;
+    this.ctx.fillStyle = '#000';
+    this.ctx.strokeStyle = '#000';
   }
 
   reset () {

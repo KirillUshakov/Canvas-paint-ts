@@ -46,8 +46,6 @@ export default class Pen extends Tool {
 
   startDraw () {
     this.isDrawing = true;
-    this.ctx.fillStyle = '#000';
-    this.ctx.strokeStyle = '#000';
   }
 
   draw () {
