@@ -1,35 +1,28 @@
 <template>
   <div class="paint">
-    <paint-panel @select-tool="selectTool" :board="board"/>
-    <!-- <div class="paint__board">
+    <paint-panel
+      @select-tool="selectTool"
+      @clear-board="clearBoard"
+
+      :board="board"
+    />
+    <div class="paint__board">
       <canvas
         ref="canvas"
         class="paint__canvas"
 
-        width = "500"
-        height = "500"
+        :width="boardSize * boardResolutionVal"
+        :height="boardSize * boardResolutionVal"
 
-        style="width: 500px; height: 500px;"
-
-        @mousedown="mousedown"
-        @mouseup="mouseup"
-        @mousemove="mousemove"
-      ></canvas>
-    </div> -->
-
-    <canvas
-        ref="canvas"
-        class="paint__canvas"
-
-        width = "500"
-        height = "500"
-
-        style="width: 500px; height: 500px;"
+        :style="boardStyle"
 
         @mousedown="mousedown"
         @mouseup="mouseup"
         @mousemove="mousemove"
+        @mouseover ="mouseover"
+        @mouseleave="mouseout"
       ></canvas>
+    </div>
   </div>
 
 </template>
@@ -49,9 +42,25 @@ import { Mouse } from '@/types/mouse';
 export default class Paint extends Vue {
   @Ref('canvas') readonly boardRef: HTMLCanvasElement
 
+  boardResolutionVal = 3;
+  boardSize = 700;
+  boardStyle = {
+    width: this.boardSize + 'px',
+    height: this.boardSize + 'px'
+  }
+
   board: Board = new Board('Default', document.createElement('canvas'));
   activeTool: Tool = new Tool('default', 'default', this.board);
+
   mousePosition: Mouse = { x: 0, y: 0 };
+
+  beforeMount () {
+    this.initMouseWindowListeners();
+  }
+
+  beforeUnmount () {
+    this.removeMouseWindowListeners();
+  }
 
   mounted () {
     this.board = new Board('Default', this.boardRef);
@@ -64,31 +73,23 @@ export default class Paint extends Vue {
 
   getBoardMousePosition (e: MouseEvent) {
     const canvas = this.board.canvas;
+    const xValue = e.pageX - canvas.getBoundingClientRect().left;
+    const yValue = e.pageY - canvas.getBoundingClientRect().top;
 
-    const xBorder = canvas.offsetWidth - canvas.clientWidth;
-    const yBorder = canvas.offsetHeight - canvas.clientHeight;
+    this.mousePosition.x = xValue * this.boardResolutionVal || 1;
+    this.mousePosition.y = yValue * this.boardResolutionVal || 1;
+  }
 
-    const xValue = e.pageX - canvas.offsetLeft;
-    const yValue = e.pageY - canvas.offsetTop;
+  clearBoard () {
+    this.board.reset();
+  }
 
-    // if (xValue <= xBorder / 2) {
-    //   xValue = xBorder / 2 + 1;
-    // }
+  initMouseWindowListeners () {
+    window.addEventListener('mouseup', this.mouseup);
+  }
 
-    // if (xValue >= canvas.offsetWidth - xBorder / 2) {
-    //   xValue = canvas.offsetWidth - xBorder / 2 - 1;
-    // }
-
-    // if (yValue <= yBorder / 2) {
-    //   yValue = yBorder / 2 + 1;
-    // }
-
-    // if (yValue >= canvas.offsetHeight - yBorder / 2) {
-    //   yValue = canvas.offsetHeight - yBorder / 2 - 1;
-    // }
-
-    this.mousePosition.x = xValue;
-    this.mousePosition.y = yValue;
+  removeMouseWindowListeners () {
+    window.removeEventListener('mouseup', this.mouseup);
   }
 
   // -- Board Mouse events
@@ -105,6 +106,16 @@ export default class Paint extends Vue {
   mousemove (e: MouseEvent) {
     this.getBoardMousePosition(e);
     this.activeTool.mousemove(this.mousePosition.x, this.mousePosition.y);
+  }
+
+  mouseover (e: MouseEvent) {
+    this.getBoardMousePosition(e);
+    this.activeTool.mouseover(this.mousePosition.x, this.mousePosition.y);
+  }
+
+  mouseout (e: MouseEvent) {
+    this.getBoardMousePosition(e);
+    this.activeTool.mouseout(this.mousePosition.x, this.mousePosition.y);
   }
 }
 </script>
@@ -178,13 +189,26 @@ export default class Paint extends Vue {
         background-image: url('../../assets/images/tools/pen.svg');
       }
     }
+
+    &--clear {
+      &::before {
+        background-image: url('../../assets/images/tools/reset.svg');
+      }
+
+      &:hover {
+        background: #f46969;
+
+        &::before {
+          transform: translate(-50%, -50%) rotate(-360deg) ;
+        }
+      }
+    }
   }
 
   &__board {
     position: relative;
 
-    width: 500px;
-    height: 500px;
+    margin: auto;
 
     border: 1px solid $light-grey;
     border-radius: 1rem;
@@ -194,7 +218,7 @@ export default class Paint extends Vue {
     width: 100%;
     height: 100%;
 
-    border: 1px solid $light-grey;
+    border: 0;
   }
 }
 </style>
