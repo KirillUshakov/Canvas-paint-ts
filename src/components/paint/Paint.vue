@@ -71,17 +71,6 @@ export default class Paint extends Vue {
     this.activeTool = selectedTool;
   }
 
-  setBoardStyles () {
-    if (!this.board.ctx) {
-      return
-    }
-
-    const ctx = this.board.ctx;
-
-    ctx.fillStyle = '#000';
-    ctx.strokeStyle = '#000';
-  }
-
   getBoardMousePosition (e: MouseEvent) {
     const canvas = this.board.canvas;
     const xValue = e.pageX - canvas.getBoundingClientRect().left;
