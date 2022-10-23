@@ -86,10 +86,12 @@ export default class Paint extends Vue {
 
   initMouseWindowListeners () {
     window.addEventListener('mouseup', this.mouseup);
+    window.addEventListener('mousemove', this.mousemove);
   }
 
   removeMouseWindowListeners () {
     window.removeEventListener('mouseup', this.mouseup);
+    window.removeEventListener('mousemove', this.mousemove);
   }
 
   // -- Board Mouse events
@@ -133,6 +135,7 @@ export default class Paint extends Vue {
   }
 
   &__tools {
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
 
@@ -197,6 +200,9 @@ export default class Paint extends Vue {
     }
 
     &--clear {
+      margin-right: 0;
+      margin-left: auto;
+
       &::before {
         background-image: url('../../assets/images/tools/reset.svg');
       }
