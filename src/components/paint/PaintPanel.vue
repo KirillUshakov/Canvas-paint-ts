@@ -33,6 +33,7 @@ import Board from '@/classes/board/board';
 
 import Tool from '@/classes/tools/tool';
 import Pen from '@/classes/tools/pen';
+import Line from '@/classes/tools/line';
 
 @Component
 export default class PaintPanel extends Vue {
@@ -41,6 +42,7 @@ export default class PaintPanel extends Vue {
   toolList: Array<Tool> = [];
   activeToolIndex = 0;
   pen: Pen;
+  line: Line;
 
   mounted () {
     this.setupTools();
@@ -49,9 +51,11 @@ export default class PaintPanel extends Vue {
 
   setupTools () {
     this.pen = new Pen('Pen', 'pen', this.board);
+    this.line = new Line('Line', 'line', this.board);
 
     this.toolList = [
-      this.pen
+      this.pen,
+      this.line
     ];
   }
 
