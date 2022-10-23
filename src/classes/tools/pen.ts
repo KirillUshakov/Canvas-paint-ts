@@ -2,8 +2,6 @@ import Tool from '@/classes/tools/tool';
 
 export default class Pen extends Tool {
   mousedown (mouseX: number, mouseY: number): void {
-    this.canDraw = true;
-
     this.setMouseValues(mouseX, mouseY);
     this.startDrawFromPoint(mouseX, mouseY);
 
@@ -11,35 +9,49 @@ export default class Pen extends Tool {
   }
 
   mouseup (mouseX: number, mouseY: number): void {
-    this.canDraw = false;
+    this.isDrawing = false;
 
     this.setMouseValues(mouseX, mouseY);
     this.endDraw();
   }
 
   mousemove (mouseX: number, mouseY: number): void {
-    if (this.canDraw) {
-      this.setMouseValues(mouseX, mouseY);
-      this.draw();
+    if (!this.isDrawing || !this.mouseOverBoard) {
+      return
+    }
+
+    this.setMouseValues(mouseX, mouseY);
+    this.isDrawing = true;
+    this.draw();
+  }
+
+  mouseout (mouseX: number, mouseY: number): void {
+    super.mouseout(mouseX, mouseY);
+
+    if (this.isDrawing) {
+      this.endDraw();
     }
   }
 
-  startDraw () {
-    console.log('start pen draw');
+  mouseover (mouseX: number, mouseY: number): void {
+    super.mouseover(mouseX, mouseY);
 
+    if (!this.isDrawing) {
+      return;
+    }
+
+    this.setMouseValues(mouseX, mouseY);
+    this.startDrawFromPoint(mouseX, mouseY);
+  }
+
+  startDraw () {
+    this.isDrawing = true;
     this.ctx.fillStyle = '#000';
     this.ctx.strokeStyle = '#000';
   }
 
   draw () {
-    console.log(this.mouseX, this.mouseY);
-
     this.ctx.lineTo(this.mouseX, this.mouseY);
     this.ctx.stroke();
-  }
-
-  endDraw () {
-    super.endDraw();
-    console.log('end pen draw');
   }
 }
