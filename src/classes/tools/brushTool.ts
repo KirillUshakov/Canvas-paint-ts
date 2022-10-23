@@ -1,6 +1,6 @@
 import Tool from '@/classes/tools/tool';
 
-export default class Pen extends Tool {
+export default class BrushTool extends Tool {
   mousedown (mouseX: number, mouseY: number): void {
     this.setMouseValues(mouseX, mouseY);
     this.startDrawFromPoint(mouseX, mouseY);
@@ -46,10 +46,5 @@ export default class Pen extends Tool {
 
   startDraw () {
     this.isDrawing = true;
-  }
-
-  draw () {
-    this.ctx.lineTo(this.mouseX, this.mouseY);
-    this.ctx.stroke();
   }
 }

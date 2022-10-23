@@ -32,8 +32,11 @@ import { Component, Vue, Prop, Emit, Watch } from 'vue-property-decorator'
 import Board from '@/classes/board/board';
 
 import Tool from '@/classes/tools/tool';
-import Pen from '@/classes/tools/pen';
-import Line from '@/classes/tools/line';
+import Pen from '@/classes/tools/brushes/pen';
+import Eraser from '@/classes/tools/brushes/eraser';
+import Line from '@/classes/tools/shapes/line';
+import Circle from '@/classes/tools/shapes/circle';
+import Rectangle from '@/classes/tools/shapes/rectangle';
 
 @Component
 export default class PaintPanel extends Vue {
@@ -41,8 +44,14 @@ export default class PaintPanel extends Vue {
 
   toolList: Array<Tool> = [];
   activeToolIndex = 0;
+
+  // Tools
   pen: Pen;
   line: Line;
+  circle: Circle;
+  rectangle: Rectangle;
+  eraser: Eraser;
+  // =============
 
   mounted () {
     this.setupTools();
@@ -52,10 +61,16 @@ export default class PaintPanel extends Vue {
   setupTools () {
     this.pen = new Pen('Pen', 'pen', this.board);
     this.line = new Line('Line', 'line', this.board);
+    this.circle = new Circle('Circle', 'circle', this.board);
+    this.rectangle = new Rectangle('Rectangle', 'rectangle', this.board);
+    this.eraser = new Eraser('Eraser', 'eraser', this.board);
 
     this.toolList = [
       this.pen,
-      this.line
+      this.line,
+      this.circle,
+      this.rectangle,
+      this.eraser
     ];
   }
 

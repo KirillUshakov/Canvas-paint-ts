@@ -1,6 +1,6 @@
 import Tool from '@/classes/tools/tool';
 
-export default class Line extends Tool {
+export default class ShapeTool extends Tool {
   mousedown (mouseX: number, mouseY: number): void {
     this.saveCurrentView();
     this.setStartPoint(mouseX, mouseY);
@@ -27,12 +27,5 @@ export default class Line extends Tool {
     this.isDrawing = true;
   }
 
-  draw () {
-    this.refreshCanvas(() => {
-      this.ctx.beginPath();
-      this.ctx.moveTo(this.startPoint.x, this.startPoint.y);
-      this.ctx.lineTo(this.mouseX, this.mouseY);
-      this.ctx.stroke();
-    })
-  }
+  draw () {}
 }

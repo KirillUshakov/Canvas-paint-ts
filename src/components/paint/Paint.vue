@@ -199,6 +199,24 @@ export default class Paint extends Vue {
       }
     }
 
+    &--circle {
+      &::before {
+        background-image: url('../../assets/images/tools/circle.svg');
+      }
+    }
+
+    &--rectangle {
+      &::before {
+        background-image: url('../../assets/images/tools/rectangle.svg');
+      }
+    }
+
+    &--eraser {
+      &::before {
+        background-image: url('../../assets/images/tools/eraser.svg');
+      }
+    }
+
     &--clear {
       margin-right: 0;
       margin-left: auto;
