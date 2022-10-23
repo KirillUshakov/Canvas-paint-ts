@@ -14,12 +14,21 @@
         class="paint__tool btn"
       >
       </button>
+      <button
+        class="paint__tool paint__tool--clear btn"
+        aria-label="Clear all"
+        title="Clear all"
+
+        @click="clearBoard"
+      >
+
+      </button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import { Component, Vue, Prop, Emit, Watch } from 'vue-property-decorator'
 import Board from '@/classes/board/board';
 
 import Tool from '@/classes/tools/tool';
@@ -34,20 +43,31 @@ export default class PaintPanel extends Vue {
   pen: Pen;
 
   mounted () {
+    this.setupTools();
+    this.selectTool(0);
+  }
+
+  setupTools () {
     this.pen = new Pen('Pen', 'pen', this.board);
 
     this.toolList = [
-      this.pen,
       this.pen
     ];
-
-    this.selectTool(0);
   }
 
   @Emit()
   selectTool (index: number) {
     this.activeToolIndex = index;
     return this.toolList[this.activeToolIndex];
+  }
+
+  @Emit()
+  clearBoard () {}
+
+  @Watch('board')
+  onBoardChange (val: Board) {
+    this.setupTools();
+    this.selectTool(0);
   }
 }
 </script>
