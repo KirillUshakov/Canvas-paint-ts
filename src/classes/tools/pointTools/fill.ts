@@ -79,7 +79,7 @@ export default class Fill extends PointTool {
       let tempPixel;
 
       // Go up
-      while (curY > 0 && this.hasPixelTargetColor({ x: startPixel.x, y: curY })) {
+      while (curY > 0 && (this.hasPixelTargetColor({ x: startPixel.x, y: curY }) || this.hasPixelAlpha({ x: startPixel.x, y: curY }))) {
         curY--;
       }
 
@@ -112,7 +112,7 @@ export default class Fill extends PointTool {
           isSetRightStartPoint = true;
         }
 
-        if (!this.hasPixelTargetColor(tempPixel)) {
+        if (!this.hasPixelTargetColor(tempPixel) && !this.hasPixelAlpha(tempPixel)) {
           break;
         }
 
@@ -154,6 +154,13 @@ export default class Fill extends PointTool {
 
   hasPixelTargetColor (pixel: Pixel) {
     return this.getPixelColor(pixel) === this.targetColor;
+  }
+
+  hasPixelAlpha (pixel: Pixel) {
+    let color: number | string = this.getPixelColor(pixel);
+    color = color.toString(16);
+
+    return color.substring(0, 1).length === 2 && color.substring(0, 1) !== 'ff';
   }
 
   isValidPixel ({ x, y }: Pixel) {
