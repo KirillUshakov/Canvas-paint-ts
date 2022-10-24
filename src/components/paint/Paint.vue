@@ -10,6 +10,7 @@
       <canvas
         ref="canvas"
         class="paint__canvas"
+        willReadFrequently="true"
 
         :width="boardSize * boardResolutionVal"
         :height="boardSize * boardResolutionVal"
@@ -42,8 +43,8 @@ import { Mouse } from '@/types/mouse';
 export default class Paint extends Vue {
   @Ref('canvas') readonly boardRef: HTMLCanvasElement
 
-  boardResolutionVal = 3;
-  boardSize = 700;
+  boardResolutionVal = 1;
+  boardSize = 750;
   boardStyle = {
     width: this.boardSize + 'px',
     height: this.boardSize + 'px'
@@ -76,8 +77,8 @@ export default class Paint extends Vue {
     const xValue = e.pageX - canvas.getBoundingClientRect().left;
     const yValue = e.pageY - canvas.getBoundingClientRect().top;
 
-    this.mousePosition.x = xValue * this.boardResolutionVal || 1;
-    this.mousePosition.y = yValue * this.boardResolutionVal || 1;
+    this.mousePosition.x = Math.round(xValue * this.boardResolutionVal) || 1;
+    this.mousePosition.y = Math.round(yValue * this.boardResolutionVal) || 1;
   }
 
   clearBoard () {
