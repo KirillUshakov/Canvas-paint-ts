@@ -16,7 +16,8 @@ export default class Board implements boardInterface {
 
     this.ctx.lineWidth = 5;
     this.ctx.fillStyle = '#000';
-    this.ctx.strokeStyle = '#000';
+    this.ctx.strokeStyle = '#ff000000';
+    this.ctx.imageSmoothingEnabled = false;
   }
 
   reset () {
