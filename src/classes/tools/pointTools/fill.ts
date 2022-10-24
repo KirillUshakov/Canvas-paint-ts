@@ -1,63 +1,173 @@
-import PointTool from '../pointTool'
+import PointTool from '../pointTool';
+import { Pixel } from '@/types/pixel';
 
 export default class Fill extends PointTool {
   // Static variables
-  imageData: ImageData;
-  imagePixelArea: Uint8ClampedArray;
-  targetColor:Uint8ClampedArray | Array <number> = [];
-  canvasWidth = 0;
-  canvasHeight = 0;
-  fillColor = 155;
+  imageData: any;
+  pixelData: {
+    width: number,
+    height: number,
+    data: Uint32Array,
+  } = {
+    width: 0,
+    height: 0,
+    data: new Uint32Array()
+  };
 
-  // Dynamic variables
-  pixelStack: Array <Array <number>> = [];
+  pixelStack: Pixel[] = [];
+  checkedPixels: Pixel[] = [];
+
+  fillColor = Number('0xFFE16941');
+  targetColor:number;
 
   startDraw (): void {
-    this.canvasWidth = this.board.canvas.width || 0;
-    this.canvasHeight = this.board.canvas.height || 0;
+    this.pixelStack = [];
+    this.checkedPixels = [];
 
-    this.imageData = this.ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight);
-    this.imagePixelArea = this.imageData.data;
+    this.pixelData.width = this.board.canvas.width || 0;
+    this.pixelData.height = this.board.canvas.height || 0;
 
-    this.targetColor = this.ctx.getImageData(this.mouseX, this.mouseY, 1, 1).data;
-    this.pixelStack.push([this.mouseX, this.mouseY]);
+    this.imageData = this.ctx.getImageData(0, 0, this.pixelData.width, this.pixelData.height);
+    this.pixelData.data = new Uint32Array(this.imageData.data.buffer);
+    this.targetColor = this.getPixelColor({ x: this.mouseX, y: this.mouseY });
 
-    this.draw();
+    if (this.targetColor === this.fillColor) {
+      return
+    }
+
+    this.pixelStack.push({
+      x: this.mouseX,
+      y: this.mouseY
+    });
+
+    this.drawByColumns();
   }
 
   draw (): void {
-    while (this.pixelStack.length) {
-      const pixel = this.pixelStack.pop();
+    let iterationCount = 0;
 
-      if (!pixel) {
+    while (this.pixelStack.length > 0) {
+      const pixel: Pixel = this.pixelStack.pop() || { x: -1, y: -1 };
+      const pixelColor = this.getPixelColor(pixel);
+
+      iterationCount++;
+
+      if (this.checkedPixels.find(el => el === pixel)) {
         continue;
       }
 
-      const doFill = this.isEqualColor(this.getPixelColor(pixel), this.targetColor);
-    }
-  }
+      if (!this.isValidPixel(pixel) || pixelColor !== this.targetColor) {
+        this.checkedPixels.push(pixel);
+        continue;
+      }
 
-  // Pixel data functions
-  pixelStartIndex (x: number, y: number): number {
-    return y * this.canvasWidth * 4 + x * 4;
-  }
-
-  getPixelColor (pixel: Array <number>): Array <number> {
-    const pixelStart = this.pixelStartIndex(pixel[0], pixel[1]);
-
-    if (this.imagePixelArea[pixelStart] === undefined || this.imagePixelArea[pixelStart + 3] === undefined) {
-      return [0, 0, 0, 0];
+      this.checkedPixels.push(pixel);
+      this.fillPixel(pixel);
+      this.addClosestPixelsToStash(pixel);
     }
 
-    return [
-      this.imagePixelArea[pixelStart],
-      this.imagePixelArea[pixelStart + 1],
-      this.imagePixelArea[pixelStart + 2],
-      this.imagePixelArea[pixelStart + 3]
-    ]
+    // Put new data to board
+    this.ctx.putImageData(this.imageData, 0, 0);
   }
 
-  isEqualColor (pixelA: Uint8ClampedArray | Array <number>, pixelB: Uint8ClampedArray | Array <number>): boolean {
-    return pixelA.join(',') === pixelB.join(',');
+  drawByColumns (): void {
+    while (this.pixelStack.length > 0) {
+      const startPixel: Pixel = this.pixelStack.pop() || { x: -1, y: -1 };
+      let curY = startPixel.y;
+      let isSetleftStartPoint = false;
+      let isSetRightStartPoint = false;
+      let tempPixel;
+
+      // Go up
+      while (curY > 0 && this.hasPixelTargetColor({ x: startPixel.x, y: curY })) {
+        curY--;
+      }
+
+      // Go down
+      curY++;
+      while (curY < this.pixelData.height) {
+        tempPixel = {
+          x: startPixel.x,
+          y: curY
+        }
+
+        const hasLeftPixelTargetColor = this.hasPixelTargetColor({ x: startPixel.x - 1, y: curY });
+        const hasRightPixelTargetColor = this.hasPixelTargetColor({ x: startPixel.x + 1, y: curY });
+
+        if (isSetleftStartPoint) {
+          isSetleftStartPoint = hasLeftPixelTargetColor;
+        }
+
+        if (isSetRightStartPoint) {
+          isSetRightStartPoint = hasRightPixelTargetColor;
+        }
+
+        if (!isSetleftStartPoint && hasLeftPixelTargetColor) {
+          this.pixelStack.push({ x: startPixel.x - 1, y: curY });
+          isSetleftStartPoint = true;
+        }
+
+        if (!isSetRightStartPoint && hasRightPixelTargetColor) {
+          this.pixelStack.push({ x: startPixel.x + 1, y: curY });
+          isSetRightStartPoint = true;
+        }
+
+        if (!this.hasPixelTargetColor(tempPixel)) {
+          break;
+        }
+
+        this.fillPixel(tempPixel);
+        curY++;
+      }
+    }
+
+    this.ctx.putImageData(this.imageData, 0, 0);
+  }
+
+  addClosestPixelsToStash ({ x, y }: Pixel) {
+    this.pixelStack.push({
+      x: x - 1,
+      y: y
+    });
+    this.pixelStack.push({
+      x: x + 1,
+      y: y
+    });
+    this.pixelStack.push({
+      x: x,
+      y: y - 1
+    });
+    this.pixelStack.push({
+      x: x,
+      y: y + 1
+    });
+  }
+
+  fillPixel ({ x, y }: Pixel) {
+    this.pixelData.data[y * this.pixelData.width + x] = Number(this.fillColor);
+  }
+
+  getPixelColor ({ x, y }: Pixel):number {
+    const color = this.pixelData.data[y * this.pixelData.width + x];
+    return color !== undefined ? color : -1;
+  }
+
+  hasPixelTargetColor (pixel: Pixel) {
+    return this.getPixelColor(pixel) === this.targetColor;
+  }
+
+  isValidPixel ({ x, y }: Pixel) {
+    const width = this.pixelData.width;
+    const height = this.pixelData.height;
+
+    if (x > width || x < 0) {
+      return false;
+    }
+
+    if (y > height || y < 0) {
+      return false;
+    }
+
+    return true;
   }
 }
