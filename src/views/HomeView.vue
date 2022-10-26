@@ -1,29 +1,27 @@
 <template>
   <div class="home">
-    <div class="container">
-      <paint/>
-    </div>
+    <paint-module/>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import Paint from '@/components/paint/Paint.vue';
+import PaintModule from '@/modules/paint/PaintModule.vue';
 
 @Component({
   components: {
-    Paint
+    PaintModule
   }
 })
 export default class HomeView extends Vue {}
 </script>
 
 <style lang="scss" scoped>
-  .home {
-    min-height: 100vh;
+.home {
+  width: 100%;
+  max-width: 1920px;
+  height: 100vh;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  overflow: hidden;
+}
 </style>

@@ -44,7 +44,7 @@ export default class Paint extends Vue {
   @Ref('canvas') readonly boardRef: HTMLCanvasElement
 
   boardResolutionVal = 1;
-  boardSize = 750;
+  boardSize = 800;
   boardStyle = {
     width: this.boardSize + 'px',
     height: this.boardSize + 'px'
@@ -190,7 +190,7 @@ export default class Paint extends Vue {
     // icon modificators
     &--pen {
       &::before {
-        background-image: url('../../assets/images/tools/pen.svg');
+        background-image: url('../../assets/images/tools/pencil.svg');
       }
     }
 
@@ -220,7 +220,7 @@ export default class Paint extends Vue {
 
     &--fill {
       &::before {
-        background-image: url('../../assets/images/tools/fill.svg');
+        background-image: url('../../assets/images/tools/floodfill.svg');
       }
     }
 
@@ -229,7 +229,7 @@ export default class Paint extends Vue {
       margin-left: auto;
 
       &::before {
-        background-image: url('../../assets/images/tools/reset.svg');
+        background-image: url('../../assets/images/global_tools/reset.svg');
       }
 
       &:hover {
