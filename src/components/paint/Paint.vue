@@ -21,7 +21,7 @@
         @mouseup="mouseup"
         @mousemove="mousemove"
         @mouseover ="mouseover"
-        @mouseleave="mouseout"
+        @mouseleave="mouseleave"
       ></canvas>
     </div>
   </div>
@@ -116,9 +116,9 @@ export default class Paint extends Vue {
     this.activeTool.mouseover(this.mousePosition.x, this.mousePosition.y);
   }
 
-  mouseout (e: MouseEvent) {
+  mouseleave (e: MouseEvent) {
     this.getBoardMousePosition(e);
-    this.activeTool.mouseout(this.mousePosition.x, this.mousePosition.y);
+    this.activeTool.mouseleave(this.mousePosition.x, this.mousePosition.y);
   }
 }
 </script>

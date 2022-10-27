@@ -65,7 +65,7 @@ export default class Tool implements toolInterface {
     this.mouseOverBoard = true;
   }
 
-  mouseout (mouseX : number, mouseY : number): void {
+  mouseleave (mouseX : number, mouseY : number): void {
     this.mouseOverBoard = false;
   }
 

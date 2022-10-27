@@ -13,7 +13,7 @@ export default interface tool {
   mouseup (mouseX: number, mouseY: number): void,
   mousemove (mouseX: number, mouseY: number): void,
   mouseover (mouseX: number, mouseY: number): void,
-  mouseout (mouseX: number, mouseY: number): void,
+  mouseleave (mouseX: number, mouseY: number): void,
   dbclick (mouseX: number, mouseY: number): void,
 
   startDraw (): void,

@@ -25,8 +25,8 @@ export default class BrushTool extends Tool {
     this.draw();
   }
 
-  mouseout (mouseX: number, mouseY: number): void {
-    super.mouseout(mouseX, mouseY);
+  mouseleave (mouseX: number, mouseY: number): void {
+    super.mouseleave(mouseX, mouseY);
 
     if (this.isDrawing) {
       this.endDraw();
