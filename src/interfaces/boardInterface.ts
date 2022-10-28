@@ -2,6 +2,10 @@ export default interface board {
   name: string,
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D | null,
+  viewsHistory: Array<ImageData | undefined>,
 
-  reset ():void
+  reset ():void,
+  getView (): ImageData | undefined,
+  saveView (): void,
+  setView (): void
 }

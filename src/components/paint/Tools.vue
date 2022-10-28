@@ -17,18 +17,42 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import { mapGetters } from 'vuex';
+
+import { Component, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
 import Tool from '@/classes/tools/tool';
 
-@Component
+@Component({
+  computed: {
+    ...mapGetters({
+      activeTool: 'getActiveTool'
+    })
+  }
+})
 export default class PaintTools extends Vue {
   @Prop({ required: true }) toolList: Tool[];
 
-  activeToolIndex = 0;
+  protected activeTool: Tool;
+
+  get activeToolIndex () {
+    if (!this.activeTool) {
+      return 0;
+    }
+
+    return this.toolList.findIndex((tool) => {
+      return tool.name === this.activeTool.name &&
+      tool.iconClass === this.activeTool.iconClass &&
+      tool.constructor.name === this.activeTool.constructor.name;
+    })
+  }
 
   @Emit()
   selectTool (index: number) {
-    this.activeToolIndex = index;
+    if (!this.toolList[index]) {
+      return
+    }
+
+    this.$store.dispatch('setActiveTool', this.toolList[index]);
   }
 }
 </script>

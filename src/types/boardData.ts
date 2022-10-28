@@ -7,5 +7,5 @@ export type BoardData = {
     width: number,
     height: number
   },
-  style: String[]
+  style: any
 }

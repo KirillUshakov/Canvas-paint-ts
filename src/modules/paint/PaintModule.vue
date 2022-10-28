@@ -1,19 +1,20 @@
 <template>
   <div class="paint">
     <paint-sidebar
-      @clear-board="clearBoard"
-      :board="board"
       :toolList="toolList"
+
+      @clear-board="clearBoard"
     />
 
     <paint-board
       :board-data="boardData"
 
+      @init-board="initBoard"
       @mousedown="mousedown"
       @mouseup="mouseup"
       @mousemove="mousemove"
       @mouseover ="mouseover"
-      @mouseleave="mouseout"
+      @mouseleave="mouseleave"
     />
 
     <paint-options />
@@ -22,6 +23,7 @@
 </template>
 
 <script lang="ts">
+import { mapGetters } from 'vuex';
 import { Component, Vue, Ref, Watch } from 'vue-property-decorator';
 import PaintSidebar from '@/components/paint/Sidebar.vue';
 import PaintBoard from '@/components/paint/Board.vue';
@@ -37,40 +39,39 @@ import Circle from '@/classes/tools/shapes/circle';
 import Rectangle from '@/classes/tools/shapes/rectangle';
 import Fill from '@/classes/tools/pointTools/fill';
 import { Mouse } from '@/types/mouse';
+import { BoardData } from '@/types/boardData';
 
 @Component({
   components: {
     PaintSidebar,
     PaintBoard,
     PaintOptions
+  },
+
+  computed: {
+    ...mapGetters({
+      activeTool: 'getActiveTool'
+    })
   }
 })
 export default class Paint extends Vue {
-  @Ref('canvas') readonly boardRef: HTMLCanvasElement
+  protected activeTool: Tool;
 
   // Data
-  // -- Board
-  boardData: {
-    board: Board,
-    resolution: number,
-    size: number,
-    style: any
-  } = {
+  boardData: BoardData = {
     board: new Board('Default', document.createElement('canvas')),
-    resolution: 1,
-    size: 800,
-    style: {
-      width: '800px',
-      height: '800px'
-    }
+    resMultiplier: 1,
+    size: {
+      width: 800,
+      height: 800
+    },
+    style: {}
   }
 
-  // -- Tools
   toolList: Tool[] = [];
-  activeTool: Tool = new Tool('default', 'default', this.boardData.board);
-
   mousePosition: Mouse = { x: 0, y: 0 };
 
+  // Hooks
   beforeMount () {
     this.initMouseWindowListeners();
   }
@@ -80,13 +81,30 @@ export default class Paint extends Vue {
   }
 
   mounted () {
-    this.boardData.board = new Board('Default', this.boardRef);
-
     this.setupTools();
     this.selectTool(0);
   }
 
+  // Watch
+  @Watch('activeTool')
+  onActiveToolChange (val: Tool) {
+    // console.log(val);
+  }
+
   // Methods
+  initBoard (board: Board) {
+    console.log('init board');
+
+    this.boardData.board = board;
+
+    this.initTools();
+  }
+
+  initTools (selectToolIndex = 0) {
+    this.setupTools();
+    this.selectTool(selectToolIndex);
+  }
+
   setupTools () {
     const board = this.boardData.board;
 
@@ -112,7 +130,8 @@ export default class Paint extends Vue {
   }
 
   selectTool (index: number) {
-    this.activeTool = this.toolList[index];
+    if (!this.toolList[index]) { return }
+    this.$store.dispatch('setActiveTool', this.toolList[index]);
   }
 
   getBoardMousePosition (e: MouseEvent) {
@@ -120,8 +139,8 @@ export default class Paint extends Vue {
     const xValue = e.pageX - canvas.getBoundingClientRect().left;
     const yValue = e.pageY - canvas.getBoundingClientRect().top;
 
-    this.mousePosition.x = Math.round(xValue * this.boardData.resolution) || 1;
-    this.mousePosition.y = Math.round(yValue * this.boardData.resolution) || 1;
+    this.mousePosition.x = Math.round(xValue * this.boardData.resMultiplier) || 1;
+    this.mousePosition.y = Math.round(yValue * this.boardData.resMultiplier) || 1;
   }
 
   clearBoard () {
@@ -159,15 +178,9 @@ export default class Paint extends Vue {
     this.activeTool.mouseover(this.mousePosition.x, this.mousePosition.y);
   }
 
-  mouseout (e: MouseEvent) {
+  mouseleave (e: MouseEvent) {
     this.getBoardMousePosition(e);
-    this.activeTool.mouseout(this.mousePosition.x, this.mousePosition.y);
-  }
-
-  @Watch('board')
-  onBoardChange (val: Board) {
-    this.setupTools();
-    this.selectTool(0);
+    this.activeTool.mouseleave(this.mousePosition.x, this.mousePosition.y);
   }
 }
 </script>

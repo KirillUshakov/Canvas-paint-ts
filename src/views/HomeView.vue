@@ -19,7 +19,6 @@ export default class HomeView extends Vue {}
 <style lang="scss" scoped>
 .home {
   width: 100%;
-  max-width: 1920px;
   height: 100vh;
 
   overflow: hidden;
