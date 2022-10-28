@@ -1,13 +1,31 @@
 <template>
   <div class="paint__sidebar">
-    <button
-      class="paint__tool paint__tool--clear btn"
-      aria-label="Clear all"
-      title="Clear all"
+    <div class="paint__sidebar-general">
+      <button
+        class="paint__tool paint__tool--settings btn"
+        aria-label="Open global settings"
+        title="Open global settings"
 
-      @click="clearBoard"
-    >
-    </button>
+        @click="generalAction"
+      >
+      </button>
+      <button
+        class="paint__tool paint__tool--undo btn"
+        aria-label="Undo"
+        title="Undo"
+
+        @click="undoAction"
+      >
+      </button>
+      <button
+        class="paint__tool paint__tool--redo btn"
+        aria-label="Redo"
+        title="Redo"
+
+        @click="redoAction"
+      >
+      </button>
+    </div>
 
     <paint-tools
       :toolList="toolList"
@@ -43,6 +61,15 @@ export default class PaintSidebar extends Vue {
 
   @Emit()
   clearBoard () {}
+
+  @Emit()
+  generalAction () {}
+
+  @Emit()
+  undoAction () {}
+
+  @Emit()
+  redoAction () {}
 }
 </script>
 

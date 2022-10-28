@@ -219,6 +219,10 @@ export default class Paint extends Vue {
     }
   }
 
+  &__sidebar-general {
+    margin-bottom: 50px;
+  }
+
   &__tools {
     width: 100%;
 
@@ -326,6 +330,7 @@ export default class Paint extends Vue {
     }
 
     &--settings {
+      opacity: 1;
       background-color: $primary;
       border-color: $primary;
 
