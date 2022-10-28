@@ -93,8 +93,6 @@ export default class Paint extends Vue {
 
   // Methods
   initBoard (board: Board) {
-    console.log('init board');
-
     this.boardData.board = board;
 
     this.initTools();
