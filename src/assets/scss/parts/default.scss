@@ -32,6 +32,68 @@ body {
   font-weight: inherit;
 }
 
+.icon-btn {
+  cursor: pointer;
+
+  width: 100%;
+  height: 100%;
+  min-width: 15px;
+  min-height: 15px;
+
+  padding: 15% 25%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-family: inherit;
+  text-align: center;
+
+  color: $white;
+  background-color: $dark;
+  border: 1px solid $dark;
+
+  transition: all .3s;
+
+  svg {
+    width: 100%;
+    height: auto;
+
+    opacity: 0.6;
+
+    transition: all .3s;
+  }
+
+  &:hover,
+  &:focus {
+    svg {
+      opacity: 1;
+    }
+  }
+
+  &.active {
+    border-color: $primary;
+  }
+}
+
+.input-color {
+  width: 100%;
+  min-height: 20px;
+
+  padding: 0;
+  border: 1px solid $light-grey;
+
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border: 0;
+  }
+
+  &::-webkit-color-swatch {
+    padding: 0;
+    border: 0;
+  }
+}
+
 .input-range {
   height: 22px;
   -webkit-appearance: none;
@@ -124,4 +186,38 @@ body {
   &:focus::-ms-fill-upper {
     background: #757575;
   }
+}
+
+.row {
+  display: flex;
+
+  margin: -0.5px;
+
+  & > .col {
+    margin: 0.5px;
+  }
+}
+
+.col {
+  flex: 1 1 auto;
+}
+
+.bg-dark {
+  background-color: $dark;
+}
+
+*:disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.eyedropper-indicator {
+  position: absolute;
+
+  width: 40px;
+  height: 40px;
+
+  border-radius: 0.5rem;
+  box-shadow: 2px 2px 6px 0px rgba(34, 60, 80, 1);
+  z-index: 999;
 }
