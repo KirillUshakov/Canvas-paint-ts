@@ -12,7 +12,21 @@
       <div class="option-item__controlls">
         <color-selector/>
       </div>
-  </div>
+    </div>
+
+    <div class="option-item">
+      <div class="option-item__title">Border color</div>
+      <div class="option-item__controlls">
+        <color-selector/>
+      </div>
+    </div>
+
+    <div class="option-item">
+      <div class="option-item__title">Border radius</div>
+      <div class="option-item__controlls">
+        <range-input-width-count/>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -27,7 +41,9 @@ import ColorSelector from '@/components/paint/options/inputs/ColorSelector.vue';
     ColorSelector
   }
 })
-export default class PaintOptionList extends Vue {}
+export default class PaintOptionList extends Vue {
+  optionList = [];
+}
 </script>
 
 <style lang="scss">

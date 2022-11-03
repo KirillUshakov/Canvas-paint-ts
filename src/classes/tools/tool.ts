@@ -1,5 +1,6 @@
 import toolInterface from '@/interfaces/toolInterface';
 import board from '@/classes/board/board';
+import { OptionList } from '@/types/optionList';
 
 export default class Tool implements toolInterface {
   name:string;
@@ -14,6 +15,7 @@ export default class Tool implements toolInterface {
     x: 0,
     y: 0
   }
+  availableOptions: OptionList = [];
 
   mouseOverBoard = false;
   isDrawing = false;

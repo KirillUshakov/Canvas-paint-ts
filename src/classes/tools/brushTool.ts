@@ -1,6 +1,18 @@
 import Tool from '@/classes/tools/tool';
+import { OptionList } from '@/types/optionList';
 
 export default class BrushTool extends Tool {
+  availableOptions: OptionList = [
+    {
+      name: 'strokeStyle',
+      title: 'Color',
+    },
+    {
+      name: 'lineWidth',
+      title: '',
+    }
+  ];
+
   mousedown (mouseX: number, mouseY: number): void {
     this.setMouseValues(mouseX, mouseY);
     this.startDrawFromPoint(mouseX, mouseY);

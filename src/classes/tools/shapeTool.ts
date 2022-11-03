@@ -1,6 +1,26 @@
 import Tool from '@/classes/tools/tool';
+import { OptionList } from '@/types/optionList';
 
 export default class ShapeTool extends Tool {
+  availableOptions: OptionList = [
+    {
+      name: 'strokeStyle',
+      title: '',
+    },
+    {
+      name: 'fillStyle',
+      title: '',
+    },
+    {
+      name: 'lineWidth',
+      title: 'Border width',
+    },
+    {
+      name: 'borderRadius',
+      title: 'Border radius',
+    }
+  ];
+
   mousedown (mouseX: number, mouseY: number): void {
     this.saveCurrentView();
     this.setStartPoint(mouseX, mouseY);
