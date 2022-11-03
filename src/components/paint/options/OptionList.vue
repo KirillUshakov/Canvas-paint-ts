@@ -1,21 +1,30 @@
 <template>
-  <div class="option-item">
-    <div class="option-item__title">Line width</div>
-    <div class="option-item__controlls">
-      <range-input-width-count/>
+  <div class="paint-option-list">
+    <div class="option-item">
+      <div class="option-item__title">Line width</div>
+      <div class="option-item__controlls">
+        <range-input-width-count/>
+      </div>
     </div>
+
+    <div class="option-item">
+      <div class="option-item__title">Fill color</div>
+      <div class="option-item__controlls">
+        <color-selector/>
+      </div>
+  </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import Counter from '@/components/common/counter.vue';
-import RangeInputWidthCount from '@/components/paint/options/RangeInputWidthCount.vue';
+import RangeInputWidthCount from '@/components/paint/options/inputs/RangeInputWidthCount.vue';
+import ColorSelector from '@/components/paint/options/inputs/ColorSelector.vue';
 
 @Component({
   components: {
-    Counter,
-    RangeInputWidthCount
+    RangeInputWidthCount,
+    ColorSelector
   }
 })
 export default class PaintOptionList extends Vue {}
@@ -41,6 +50,7 @@ export default class PaintOptionList extends Vue {}
 
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
 
       & > .left {
         flex-grow: 1;
@@ -49,6 +59,12 @@ export default class PaintOptionList extends Vue {}
 
       & > .right {
         flex: 0 0 85px;
+      }
+
+      & > .full {
+        flex: 1 1 100%;
+
+        margin-top: 0.625rem;
       }
     }
   }

@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { mapGetters } from 'vuex';
-import { Component, Vue, Ref, Watch } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import PaintSidebar from '@/components/paint/Sidebar.vue';
 import PaintBoard from '@/components/paint/Board.vue';
 import PaintOptions from '@/components/paint/Options.vue';
@@ -34,6 +34,7 @@ import Board from '@/classes/board/board';
 import Tool from '@/classes/tools/tool';
 import Pen from '@/classes/tools/brushes/pen';
 import Eraser from '@/classes/tools/brushes/eraser';
+import EyeDropper from '@/classes/tools/brushes/eyeDropper';
 import Line from '@/classes/tools/shapes/line';
 import Circle from '@/classes/tools/shapes/circle';
 import Rectangle from '@/classes/tools/shapes/rectangle';
@@ -110,12 +111,14 @@ export default class Paint extends Vue {
       return;
     }
 
+    this.$store.dispatch('setActiveBoard', board);
     const pen = new Pen('Pen', 'pen', board);
     const line = new Line('Line', 'line', board);
     const circle = new Circle('Circle', 'circle', board);
     const rectangle = new Rectangle('Rectangle', 'rectangle', board);
     const eraser = new Eraser('Eraser', 'eraser', board);
     const fill = new Fill('Fill', 'fill', board);
+    const eyeDropper = new EyeDropper('EyeDropper', 'eyedropper', board);
 
     this.toolList = [
       pen,
@@ -123,7 +126,8 @@ export default class Paint extends Vue {
       circle,
       rectangle,
       eraser,
-      fill
+      fill,
+      eyeDropper
     ];
   }
 
@@ -190,7 +194,6 @@ export default class Paint extends Vue {
   height: 100%;
 
   display: flex;
-  justify-content: space-between;
 
   &__sidebar {
     display: flex;
