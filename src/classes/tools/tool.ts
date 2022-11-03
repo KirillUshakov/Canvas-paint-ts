@@ -15,6 +15,7 @@ export default class Tool implements toolInterface {
     x: 0,
     y: 0
   }
+
   availableOptions: OptionList = [];
 
   mouseOverBoard = false;

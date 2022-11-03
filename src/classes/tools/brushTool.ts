@@ -5,11 +5,11 @@ export default class BrushTool extends Tool {
   availableOptions: OptionList = [
     {
       name: 'strokeStyle',
-      title: 'Color',
+      title: 'Color'
     },
     {
       name: 'lineWidth',
-      title: '',
+      title: ''
     }
   ];
 

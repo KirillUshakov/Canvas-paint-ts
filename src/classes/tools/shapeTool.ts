@@ -5,19 +5,19 @@ export default class ShapeTool extends Tool {
   availableOptions: OptionList = [
     {
       name: 'strokeStyle',
-      title: '',
+      title: ''
     },
     {
       name: 'fillStyle',
-      title: '',
+      title: ''
     },
     {
       name: 'lineWidth',
-      title: 'Border width',
+      title: 'Border width'
     },
     {
       name: 'borderRadius',
-      title: 'Border radius',
+      title: 'Border radius'
     }
   ];
 

@@ -5,8 +5,8 @@ export default class PointTool extends Tool {
   availableOptions: OptionList = [
     {
       name: 'fillStyle',
-      title: 'Fill color',
-    },
+      title: 'Fill color'
+    }
   ];
 
   mousedown (mouseX: number, mouseY: number): void {
