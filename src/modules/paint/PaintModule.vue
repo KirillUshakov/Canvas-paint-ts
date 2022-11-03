@@ -34,7 +34,6 @@ import Board from '@/classes/board/board';
 import Tool from '@/classes/tools/tool';
 import Pen from '@/classes/tools/brushes/pen';
 import Eraser from '@/classes/tools/brushes/eraser';
-import EyeDropper from '@/classes/tools/brushes/eyeDropper';
 import Line from '@/classes/tools/shapes/line';
 import Circle from '@/classes/tools/shapes/circle';
 import Rectangle from '@/classes/tools/shapes/rectangle';
@@ -118,7 +117,6 @@ export default class Paint extends Vue {
     const rectangle = new Rectangle('Rectangle', 'rectangle', board);
     const eraser = new Eraser('Eraser', 'eraser', board);
     const fill = new Fill('Fill', 'fill', board);
-    const eyeDropper = new EyeDropper('EyeDropper', 'eyedropper', board);
 
     this.toolList = [
       pen,
@@ -126,8 +124,7 @@ export default class Paint extends Vue {
       circle,
       rectangle,
       eraser,
-      fill,
-      eyeDropper
+      fill
     ];
   }
 
