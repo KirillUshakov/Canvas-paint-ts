@@ -1,24 +1,22 @@
 import Tool from '@/classes/tools/tool';
-import { OptionList } from '@/types/optionList';
+import { toolOption } from '@/types/toolOption';
 
 export default class ShapeTool extends Tool {
-  availableOptions: OptionList = [
+  availableOptions: toolOption[] = [
     {
-      name: 'strokeStyle',
-      title: ''
+      optionName: 'strokeStyle'
     },
     {
-      name: 'fillStyle',
-      title: ''
+      optionName: 'fillStyle'
     },
     {
-      name: 'lineWidth',
+      optionName: 'lineWidth',
       title: 'Border width'
-    },
-    {
-      name: 'borderRadius',
-      title: 'Border radius'
     }
+    // {
+    //   optionName: 'borderRadius',
+    //   title: 'Border radius'
+    // }
   ];
 
   mousedown (mouseX: number, mouseY: number): void {

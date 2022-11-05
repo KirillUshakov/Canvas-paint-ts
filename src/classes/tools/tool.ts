@@ -1,6 +1,7 @@
 import toolInterface from '@/interfaces/toolInterface';
 import board from '@/classes/board/board';
-import { OptionList } from '@/types/optionList';
+import { toolOption } from '@/types/toolOption';
+import { setupToolOption } from '@/types/setupToolOption';
 
 export default class Tool implements toolInterface {
   name:string;
@@ -16,7 +17,8 @@ export default class Tool implements toolInterface {
     y: 0
   }
 
-  availableOptions: OptionList = [];
+  curCustomOptions: setupToolOption[];
+  availableOptions: toolOption[] = [];
 
   mouseOverBoard = false;
   isDrawing = false;
@@ -26,6 +28,8 @@ export default class Tool implements toolInterface {
     this.iconClass = iconClass;
     this.board = board;
     this.ctx = this.board.canvas.getContext('2d');
+    this.ctx.lineCap = 'round';
+    this.ctx.lineJoin = 'round';
   }
 
   setMouseValues (x: number, y: number): void {
@@ -45,6 +49,21 @@ export default class Tool implements toolInterface {
 
   saveCurrentView () {
     this.startedView = this.board.canvas.toDataURL();
+  }
+
+  setToolSettings (options: setupToolOption[]): void {
+    for (let o = 0; o < options.length; o++) {
+      const option = options[o];
+
+      if (option.custom) {
+        this.curCustomOptions.push(option);
+        continue;
+      }
+
+      if (this.ctx[option.name]) {
+        this.ctx[option.name] = option.value;
+      }
+    }
   }
 
   // Clear / Refresh canvas

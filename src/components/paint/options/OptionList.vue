@@ -1,48 +1,100 @@
 <template>
   <div class="paint-option-list">
-    <div class="option-item">
-      <div class="option-item__title">Line width</div>
-      <div class="option-item__controlls">
-        <range-input-width-count/>
-      </div>
-    </div>
+    <div
+      v-for="option in optionList"
+      :key="option.id"
 
-    <div class="option-item">
-      <div class="option-item__title">Fill color</div>
+      class="option-item"
+    >
+      <div class="option-item__title">{{ option.title }}</div>
       <div class="option-item__controlls">
-        <color-selector/>
-      </div>
-    </div>
+        <range-input-width-count
+          v-if="option.type === 'number'"
+          v-model="option.value"
 
-    <div class="option-item">
-      <div class="option-item__title">Border color</div>
-      <div class="option-item__controlls">
-        <color-selector/>
-      </div>
-    </div>
+          :minVal="option.options.min"
+          :maxVal="option.options.max"
 
-    <div class="option-item">
-      <div class="option-item__title">Border radius</div>
-      <div class="option-item__controlls">
-        <range-input-width-count/>
+          @input="setBoardSettings"
+        />
+        <color-selector
+          v-else-if="option.type === 'color'"
+          v-model="option.value"
+          @input="setBoardSettings"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { mapGetters } from 'vuex';
+import { Component, Vue } from 'vue-property-decorator';
+import { allOptions } from '@/components/paint/options/config/allOptions'
+import { OptionList } from '@/types/optionList';
 import RangeInputWidthCount from '@/components/paint/options/inputs/RangeInputWidthCount.vue';
 import ColorSelector from '@/components/paint/options/inputs/ColorSelector.vue';
+import Tool from '@/classes/tools/tool';
+import { setupToolOption } from '@/types/setupToolOption';
+import Board from '@/classes/board/board';
+import { boardOption } from '@/types/boardOption';
+import board from '@/interfaces/boardInterface';
+import { toolOption } from '@/types/toolOption';
 
 @Component({
   components: {
     RangeInputWidthCount,
     ColorSelector
+  },
+
+  computed: {
+    ...mapGetters({
+      activeTool: 'getActiveTool',
+      activeBoard: 'getActiveBoard'
+    })
   }
 })
 export default class PaintOptionList extends Vue {
-  optionList = [];
+  private activeBoard: Board;
+  private activeTool: Tool;
+  allOptions: OptionList = allOptions;
+
+  // Computed
+  get activeToolOptions (): toolOption[] {
+    return this.activeTool?.availableOptions;
+  }
+
+  get optionList (): OptionList {
+    let optionList = this.allOptions;
+
+    if (!this.activeToolOptions) return optionList;
+
+    optionList = optionList.filter(el => this.activeToolOptions.find(option => option.optionName === el.optionName));
+
+    this.activeToolOptions.forEach(option => {
+      const findOption = optionList.find(el => el.optionName === option.optionName);
+
+      if (findOption) {
+        findOption.title = option.title && option.title.length ? option.title : findOption.title;
+      }
+    });
+
+    return optionList;
+  }
+
+  // Methods
+  setBoardSettings () {
+    this.activeBoard.setupContextSettings(this.prepareBoardSettings(this.allOptions));
+  }
+
+  prepareBoardSettings (options: OptionList): boardOption[] {
+    return options.map((el) => {
+      return {
+        key: el.optionName,
+        value: el.value
+      }
+    });
+  }
 }
 </script>
 

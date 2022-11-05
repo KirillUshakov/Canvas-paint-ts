@@ -1,6 +1,18 @@
+import { toolOption } from '@/types/toolOption';
 import ShapeTool from '../shapeTool';
 
 export default class Line extends ShapeTool {
+  availableOptions: toolOption[] = [
+    {
+      optionName: 'strokeStyle',
+      title: 'Color'
+    },
+    {
+      optionName: 'lineWidth',
+      title: 'Line width'
+    }
+  ];
+
   draw () {
     this.refreshCanvas(() => {
       this.ctx.beginPath();

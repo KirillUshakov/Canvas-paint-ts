@@ -3,6 +3,7 @@
     <div class="left">
       <input
         v-model="curValue"
+        @change="onChange"
         :min="minVal"
         :max="maxVal"
 
@@ -11,7 +12,7 @@
       >
     </div>
     <div class="right">
-      <counter v-model="curValue" :minVal="minVal" :maxVal="maxVal"/>
+      <counter v-model="curValue" @input="onChange" :minVal="minVal" :maxVal="maxVal"/>
     </div>
   </div>
 </template>
@@ -26,14 +27,14 @@ import Counter from '@/components/common/Counter.vue'
   }
 })
 export default class RangeInputWidthCount extends Vue {
-  @Prop({ default: 15 }) defaultValue: number;
+  @Prop({ default: 15 }) value: number;
   @Prop({ default: 0 }) minVal : number;
   @Prop({ default: 1000 }) maxVal : number;
 
   curValue = 15;
 
   mounted () {
-    this.curValue = this.defaultValue;
+    this.curValue = this.value;
   }
 
   @Emit('input')

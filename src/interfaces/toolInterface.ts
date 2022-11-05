@@ -1,5 +1,6 @@
 import board from '@/classes/board/board';
-import { OptionList } from '@/types/optionList';
+import { setupToolOption } from '@/types/setupToolOption';
+import { toolOption } from '@/types/toolOption';
 
 export default interface tool {
   name: string,
@@ -9,7 +10,8 @@ export default interface tool {
   isDrawing: boolean;
   mouseX: number;
   mouseY: number;
-  availableOptions: OptionList;
+  availableOptions: toolOption[];
+  curCustomOptions: setupToolOption[];
 
   mousedown (mouseX: number, mouseY: number): void,
   mouseup (mouseX: number, mouseY: number): void,
@@ -22,6 +24,7 @@ export default interface tool {
   draw (): void,
   endDraw (): void,
 
+  setToolSettings (options: setupToolOption[]): void,
   setMouseValues(x: number, y: number): void,
   startDrawFromPoint (mouseX: number, mouseY: number): void
 }

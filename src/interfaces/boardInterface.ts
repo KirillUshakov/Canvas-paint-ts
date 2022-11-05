@@ -1,3 +1,5 @@
+import { boardOption } from "@/types/boardOption";
+
 export default interface board {
   name: string,
   canvas: HTMLCanvasElement,
@@ -7,5 +9,6 @@ export default interface board {
   reset ():void,
   getView (): ImageData | undefined,
   saveView (): void,
-  setView (): void
+  setLastView (): void,
+  setupContextSettings (optionList: boardOption[]): void
 }

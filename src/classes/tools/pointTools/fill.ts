@@ -17,7 +17,7 @@ export default class Fill extends PointTool {
   pixelStack: Pixel[] = [];
   checkedPixels: Pixel[] = [];
 
-  fillColor = Number('0xFFE16941');
+  fillColor = Number('0xFF000000');
   targetColor:number;
 
   startDraw (): void {
@@ -30,6 +30,7 @@ export default class Fill extends PointTool {
     this.imageData = this.ctx.getImageData(0, 0, this.pixelData.width, this.pixelData.height);
     this.pixelData.data = new Uint32Array(this.imageData.data.buffer);
     this.targetColor = this.getPixelColor({ x: this.mouseX, y: this.mouseY });
+    this.fillColor = this.getHexNumber(this.ctx.fillStyle);
 
     if (this.targetColor === this.fillColor) {
       return
@@ -150,6 +151,13 @@ export default class Fill extends PointTool {
   getPixelColor ({ x, y }: Pixel):number {
     const color = this.pixelData.data[y * this.pixelData.width + x];
     return color !== undefined ? color : -1;
+  }
+
+  getHexNumber (hex: string): number {
+    if (hex.length !== 7) return Number('0xFF000000');
+
+    const newHex = hex.substring(1).match(/..?/g)?.reverse().join('');
+    return Number('0xFF' + newHex);
   }
 
   hasPixelTargetColor (pixel: Pixel) {

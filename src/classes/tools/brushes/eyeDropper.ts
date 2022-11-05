@@ -1,11 +1,13 @@
 import BrushTool from '../brushTool';
 import { Pixel } from '@/types/pixel';
 import Board from '@/classes/board/board';
+import Tool from '../tool';
 
 export default class EyeDropper extends BrushTool {
   completeFunction: Function;
   eyeDropperIndicator = document.createElement('div');
   imageData: any;
+  latestTool: Tool;
   pixelData: {
     width: number,
     height: number,
@@ -18,7 +20,7 @@ export default class EyeDropper extends BrushTool {
 
   pickedColor: string;
 
-  constructor (name:string, iconClass:string, board:Board, completeFunction? : (selectedColor: string) => void) {
+  constructor (name:string, iconClass:string, board:Board, completeFunction? : (selectedColor: string, previousTool: Tool) => void) {
     super(name, iconClass, board);
 
     if (completeFunction) {
@@ -48,7 +50,7 @@ export default class EyeDropper extends BrushTool {
 
   endDraw (): void {
     this.eyeDropperIndicator.remove();
-    this.completeFunction(this.getHexColorFrom16Bits(this.pickedColor))
+    this.completeFunction(this.getHexColorFrom16Bits(this.pickedColor), this.latestTool);
   }
 
   getPixelColor ({ x, y }: Pixel):string {
@@ -80,5 +82,9 @@ export default class EyeDropper extends BrushTool {
       }
       return result;
     }, []).join('');
+  }
+
+  setLatestActiveTool (latestTool: Tool) {
+    this.latestTool = latestTool;
   }
 }

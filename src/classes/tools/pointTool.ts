@@ -1,10 +1,10 @@
 import Tool from '@/classes/tools/tool';
-import { OptionList } from '@/types/optionList';
+import { toolOption } from '@/types/toolOption';
 
 export default class PointTool extends Tool {
-  availableOptions: OptionList = [
+  availableOptions: toolOption[] = [
     {
-      name: 'fillStyle',
+      optionName: 'fillStyle',
       title: 'Fill color'
     }
   ];

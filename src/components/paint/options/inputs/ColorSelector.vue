@@ -12,7 +12,7 @@
     </div>
     <div class="right row">
       <div class="col">
-        <arrow-btn v-model="showPreviousColors" :arrowDown="true" :is-disabled="!previousColors.length"/>
+        <arrow-btn v-model="showLatestColors" :arrowDown="true" :is-disabled="!latestColors.length"/>
       </div>
       <div class="col">
         <button
@@ -30,17 +30,17 @@
         </button>
       </div>
     </div>
-    <div v-if="previousColors.length && showPreviousColors" class="full bg-dark">
+    <div v-if="latestColors.length && showLatestColors" class="full bg-dark">
       <div class="previous-colors">
         <button
-          v-for="(prevColor, index) in previousColors"
+          v-for="(latestColor, index) in latestColors"
           :key="index"
 
-          @click="selectColor(prevColor, index)"
+          @click="selectColor(latestColor, index)"
 
-          :class="{ 'active' : prevColor === color }"
-          :style="`background-color: ${ prevColor };`"
-          :title="`select color - ${ prevColor }`"
+          :class="{ 'active' : latestColor === color }"
+          :style="`background-color: ${ latestColor };`"
+          :title="`select color - ${ latestColor }`"
 
           type="button"
           class="previous-colors__item"
@@ -65,7 +65,9 @@ import Tool from '@/classes/tools/tool';
 
   computed: {
     ...mapGetters({
-      board: 'getActiveBoard'
+      board: 'getActiveBoard',
+      activeTool: 'getActiveTool',
+      latestColors: 'getLatestColors'
     })
   }
 })
@@ -73,11 +75,12 @@ export default class ColorSelector extends Vue {
   @Prop({ default: '#212121' }) value: string;
 
   protected board: Board;
+  protected activeTool: Tool;
 
   resetTool: Tool = new Tool('default', 'default', new Board('default', document.createElement('canvas')));
   eyeDropper: EyeDropper;
   previousColors: String[] = [];
-  showPreviousColors = false;
+  showLatestColors = false;
   isEyeDropperMode = false
   maxPreviousColors = 20;
   color = '#212121';
@@ -93,7 +96,7 @@ export default class ColorSelector extends Vue {
   }
 
   setupEyeDropper () {
-    this.eyeDropper = new EyeDropper('EyeDropper', 'eyedropper', this.board, (selectedColor) => {
+    this.eyeDropper = new EyeDropper('EyeDropper', 'eyedropper', this.board, (selectedColor, previousTool) => {
       this.eyeDropperAction();
       this.color = selectedColor;
       this.inputChange();
@@ -101,13 +104,21 @@ export default class ColorSelector extends Vue {
   }
 
   inputChange () {
-    this.addPreviousColor(this.color, this.previousColors.findIndex(prevClr => prevClr === this.color));
+    this.$store.dispatch('addLatestColor', {
+      color: this.color,
+      index: -1
+    });
+    // this.addPreviousColor(this.color, this.previousColors.findIndex(prevClr => prevClr === this.color));
     this.onChange();
   }
 
   selectColor (selectedColor: string, index: number) {
     this.color = selectedColor;
-    this.addPreviousColor(this.color, index);
+    this.$store.dispatch('addLatestColor', {
+      color: this.color,
+      index: index
+    });
+    // this.addPreviousColor(this.color, index);
     this.onChange();
   }
 
@@ -138,7 +149,14 @@ export default class ColorSelector extends Vue {
     this.isEyeDropperMode = !this.isEyeDropperMode;
 
     if (this.isEyeDropperMode) {
+      this.eyeDropper.setLatestActiveTool(this.activeTool);
+      this.eyeDropper.availableOptions = this.activeTool?.availableOptions;
       this.$store.dispatch('setActiveTool', this.eyeDropper);
+      return;
+    }
+
+    if (this.eyeDropper.latestTool) {
+      this.$store.dispatch('setActiveTool', this.eyeDropper.latestTool);
       return;
     }
 
