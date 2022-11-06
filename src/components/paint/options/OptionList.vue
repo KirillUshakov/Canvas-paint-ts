@@ -1,5 +1,5 @@
 <template>
-  <div class="paint-option-list">
+  <div class="paint-option-list" :key="optionListKey">
     <div
       v-for="option in optionList"
       :key="option.id"
@@ -35,10 +35,8 @@ import { OptionList } from '@/types/optionList';
 import RangeInputWidthCount from '@/components/paint/options/inputs/RangeInputWidthCount.vue';
 import ColorSelector from '@/components/paint/options/inputs/ColorSelector.vue';
 import Tool from '@/classes/tools/tool';
-import { setupToolOption } from '@/types/setupToolOption';
 import Board from '@/classes/board/board';
 import { boardOption } from '@/types/boardOption';
-import board from '@/interfaces/boardInterface';
 import { toolOption } from '@/types/toolOption';
 
 @Component({
@@ -58,6 +56,7 @@ export default class PaintOptionList extends Vue {
   private activeBoard: Board;
   private activeTool: Tool;
   allOptions: OptionList = allOptions;
+  optionListKey = 1;
 
   // Computed
   get activeToolOptions (): toolOption[] {
@@ -65,26 +64,30 @@ export default class PaintOptionList extends Vue {
   }
 
   get optionList (): OptionList {
-    let optionList = this.allOptions;
+    let optionList: OptionList = JSON.parse(JSON.stringify(this.allOptions));
 
     if (!this.activeToolOptions) return optionList;
 
+    const curContext = this.activeBoard.ctx;
     optionList = optionList.filter(el => this.activeToolOptions.find(option => option.optionName === el.optionName));
 
     this.activeToolOptions.forEach(option => {
       const findOption = optionList.find(el => el.optionName === option.optionName);
+      const curValue = curContext ? curContext[option.optionName] : undefined;
 
       if (findOption) {
         findOption.title = option.title && option.title.length ? option.title : findOption.title;
+        findOption.value = curValue !== undefined && curValue !== findOption.value ? curValue : findOption.value;
       }
     });
 
+    this.optionListKey++;
     return optionList;
   }
 
   // Methods
   setBoardSettings () {
-    this.activeBoard.setupContextSettings(this.prepareBoardSettings(this.allOptions));
+    this.activeBoard.setupContextSettings(this.prepareBoardSettings(this.optionList));
   }
 
   prepareBoardSettings (options: OptionList): boardOption[] {
