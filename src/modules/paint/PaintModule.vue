@@ -2,8 +2,6 @@
   <div class="paint">
     <paint-sidebar
       :toolList="toolList"
-
-      @clear-board="clearBoard"
     />
 
     <paint-board
@@ -50,12 +48,14 @@ import { BoardData } from '@/types/boardData';
 
   computed: {
     ...mapGetters({
-      activeTool: 'getActiveTool'
+      activeTool: 'getActiveTool',
+      activeBoard: 'getActiveBoard'
     })
   }
 })
 export default class Paint extends Vue {
   protected activeTool: Tool;
+  protected activeBoard: Board;
 
   // Data
   boardData: BoardData = {
@@ -83,12 +83,6 @@ export default class Paint extends Vue {
   mounted () {
     this.setupTools();
     this.selectTool(0);
-  }
-
-  // Watch
-  @Watch('activeTool')
-  onActiveToolChange (val: Tool) {
-    // console.log(val);
   }
 
   // Methods
@@ -149,15 +143,18 @@ export default class Paint extends Vue {
   initMouseWindowListeners () {
     window.addEventListener('mouseup', this.mouseup);
     window.addEventListener('mousemove', this.mousemove);
+    window.addEventListener('keyup', this.keyupHandler);
   }
 
   removeMouseWindowListeners () {
     window.removeEventListener('mouseup', this.mouseup);
     window.removeEventListener('mousemove', this.mousemove);
+    window.addEventListener('keyup', this.keyupHandler);
   }
 
   // -- Board Mouse events
   mousedown (e: MouseEvent) {
+    this.activeBoard.saveView();
     this.getBoardMousePosition(e);
     this.activeTool.mousedown(this.mousePosition.x, this.mousePosition.y);
   }
@@ -169,7 +166,7 @@ export default class Paint extends Vue {
 
   mousemove (e: MouseEvent) {
     this.getBoardMousePosition(e);
-    this.activeTool.mousemove(this.mousePosition.x, this.mousePosition.y);
+    this.activeTool.mousemove(this.mousePosition.x, this.mousePosition.y, e);
   }
 
   mouseover (e: MouseEvent) {
@@ -180,6 +177,25 @@ export default class Paint extends Vue {
   mouseleave (e: MouseEvent) {
     this.getBoardMousePosition(e);
     this.activeTool.mouseleave(this.mousePosition.x, this.mousePosition.y);
+  }
+
+  keyupHandler (e: KeyboardEvent) {
+    if (e.ctrlKey && e.key === 'z') {
+      this.undoAction();
+      return;
+    }
+
+    if (e.ctrlKey && e.key === 'y') {
+      this.redoAction();
+    }
+  }
+
+  undoAction () {
+    this.activeBoard.undoAction();
+  }
+
+  redoAction () {
+    this.activeBoard.redoAction();
   }
 }
 </script>

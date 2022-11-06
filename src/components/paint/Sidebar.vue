@@ -15,6 +15,7 @@
         title="Undo"
 
         @click="undoAction"
+        :disabled="!isUndoAvailable"
       >
       </button>
       <button
@@ -23,6 +24,7 @@
         title="Redo"
 
         @click="redoAction"
+        :disabled="!isRedoAvailable"
       >
       </button>
     </div>
@@ -44,32 +46,56 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Emit, Watch } from 'vue-property-decorator'
+import { mapGetters } from 'vuex';
 
 // Components
 import PaintTools from '@/components/paint/Tools.vue';
 
 // Classes
 import Tool from '@/classes/tools/tool';
+import Board from '@/classes/board/board';
 
 @Component({
   components: {
     PaintTools
+  },
+
+  computed: {
+    ...mapGetters({
+      activeBoard: 'getActiveBoard'
+    })
   }
 })
 export default class PaintSidebar extends Vue {
   @Prop({ required: true }) toolList: Tool[];
 
-  @Emit()
-  clearBoard () {}
+  protected activeBoard: Board;
 
+  // Computed
+  get isUndoAvailable () {
+    return this.activeBoard?.undoHistory?.length;
+  }
+
+  get isRedoAvailable () {
+    return this.activeBoard?.redoHistory?.length;
+  }
+
+  // Methods
+  undoAction () {
+    this.activeBoard?.undoAction();
+  }
+
+  redoAction () {
+    this.activeBoard?.redoAction();
+  }
+
+  clearBoard () {
+    this.activeBoard?.reset();
+  }
+
+  // Emit
   @Emit()
   generalAction () {}
-
-  @Emit()
-  undoAction () {}
-
-  @Emit()
-  redoAction () {}
 }
 </script>
 

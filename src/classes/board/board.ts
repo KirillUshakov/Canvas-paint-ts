@@ -6,7 +6,9 @@ export default class Board implements boardInterface {
   name: string;
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D | null;
-  viewsHistory: Array<ImageData | undefined> = [];
+  undoHistory: Array<ImageData | undefined> = [];
+  redoHistory: Array<ImageData | undefined> = [];
+  maxHistoryLength: 30;
 
   constructor (name:string, canvas:HTMLCanvasElement) {
     this.name = name;
@@ -17,12 +19,11 @@ export default class Board implements boardInterface {
       return;
     }
 
-    this.ctx.lineWidth = 5;
+    this.ctx.lineWidth = 15;
     this.ctx.lineCap = 'round';
     this.ctx.lineJoin = 'round';
     this.ctx.fillStyle = '#000';
     this.ctx.strokeStyle = '#000';
-    // this.ctx.imageSmoothingEnabled = false;
   }
 
   getView (): ImageData | undefined {
@@ -32,18 +33,38 @@ export default class Board implements boardInterface {
   }
 
   saveView () {
-    console.log('save');
-    console.log(this.getView());
+    const view = this.getView();
 
-    this.viewsHistory.push(this.getView());
+    if (!view) return;
+
+    this.redoHistory = [];
+    this.undoHistory.push(view);
+    this.undoHistory = this.getFilteredHistory(this.undoHistory, this.maxHistoryLength);
   }
 
-  setLastView () {
-    const data = this.viewsHistory.pop();
+  undoAction () {
+    const data = this.undoHistory.pop();
+    if (!data || !this.ctx) { return }
+
+    this.redoHistory.push(this.getView());
+    this.redoHistory = this.getFilteredHistory(this.redoHistory, this.maxHistoryLength);
+    this.ctx.putImageData(data, 0, 0);
+  }
+
+  redoAction () {
+    const data = this.redoHistory.pop();
 
     if (!data || !this.ctx) { return }
 
+    this.undoHistory.push(this.getView());
+    this.undoHistory = this.getFilteredHistory(this.undoHistory, this.maxHistoryLength);
     this.ctx.putImageData(data, 0, 0);
+  }
+
+  getFilteredHistory (arr: Array<ImageData | undefined>, maxLength: number): Array<ImageData | undefined> {
+    if (arr.length <= maxLength || !arr) return arr;
+
+    return arr.splice(arr.length - maxLength);
   }
 
   setupContextSettings (optionList: boardOption[]) {
@@ -59,6 +80,7 @@ export default class Board implements boardInterface {
       return;
     }
 
+    this.redoHistory = this.undoHistory = [];
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 }

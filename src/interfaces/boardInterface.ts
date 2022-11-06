@@ -4,11 +4,14 @@ export default interface board {
   name: string,
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D | null,
-  viewsHistory: Array<ImageData | undefined>,
+  undoHistory: Array<ImageData | undefined>,
+  redoHistory: Array<ImageData | undefined>,
+  maxHistoryLength: number,
 
   reset ():void,
   getView (): ImageData | undefined,
   saveView (): void,
-  setLastView (): void,
+  undoAction (): void,
+  redoAction (): void,
   setupContextSettings (optionList: boardOption[]): void
 }
