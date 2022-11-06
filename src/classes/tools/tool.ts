@@ -2,6 +2,7 @@ import toolInterface from '@/interfaces/toolInterface';
 import board from '@/classes/board/board';
 import { toolOption } from '@/types/toolOption';
 import { setupToolOption } from '@/types/setupToolOption';
+import { availableKeys } from '@/types/availableKeys';
 
 export default class Tool implements toolInterface {
   name:string;
@@ -19,9 +20,12 @@ export default class Tool implements toolInterface {
 
   curCustomOptions: setupToolOption[];
   availableOptions: toolOption[] = [];
+  availableKeys: availableKeys = [];
 
   mouseOverBoard = false;
   isDrawing = false;
+  isShiftKey = false;
+  isCtrlKey = false;
 
   constructor (name:string, iconClass:string, board:board) {
     this.name = name;
@@ -45,6 +49,13 @@ export default class Tool implements toolInterface {
   startDrawFromPoint (mouseX: number, mouseY: number) {
     this.ctx.beginPath();
     this.ctx.moveTo(mouseX, mouseY);
+  }
+
+  drawPoint (mouseX: number, mouseY: number) {
+    this.ctx.lineTo(mouseX + 0.00001, mouseY + 0.00001);
+    this.ctx.stroke();
+    this.ctx.closePath();
+    this.ctx.beginPath();
   }
 
   saveCurrentView () {
@@ -96,9 +107,11 @@ export default class Tool implements toolInterface {
   }
 
   mousedown (mouseX : number, mouseY : number): void {}
-  mousemove (mouseX : number, mouseY : number): void {}
+  mousemove (mouseX : number, mouseY : number, event: MouseEvent): void {}
   mouseup (mouseX : number, mouseY : number): void {}
   dbclick (mouseX : number, mouseY : number): void {}
   startDraw (): void {}
   draw (): void {}
+  shiftDraw (): void {}
+  ctrlDraw (): void {}
 }

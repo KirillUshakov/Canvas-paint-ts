@@ -32,12 +32,25 @@ export default class ShapeTool extends Tool {
     this.endDraw();
   }
 
-  mousemove (mouseX: number, mouseY: number): void {
+  mousemove (mouseX: number, mouseY: number, event: MouseEvent): void {
     if (!this.isDrawing) {
       return;
     }
 
+    this.isShiftKey = event.shiftKey;
+    this.isCtrlKey = event.ctrlKey;
     this.setMouseValues(mouseX, mouseY);
+
+    if (this.isShiftKey && this.availableKeys.includes('shift')) {
+      this.shiftDraw();
+      return;
+    }
+
+    if (this.isCtrlKey && this.availableKeys.includes('ctrl')) {
+      this.ctrlDraw();
+      return;
+    }
+
     this.draw();
   }
 
