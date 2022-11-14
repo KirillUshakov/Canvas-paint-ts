@@ -1,10 +1,10 @@
-import { availableKeys } from '@/types/availableKeys';
-import { toolOption } from '@/types/toolOption';
+import { availableKeys } from '@/types/paintTypes';
+import { toolAvailableOption } from '@/types/toolTypes';
 import ShapeTool from '../shapeTool';
 
 export default class Line extends ShapeTool {
   availableKeys: availableKeys = ['shift'];
-  availableOptions: toolOption[] = [
+  availableOptions: toolAvailableOption[] = [
     {
       optionName: 'strokeStyle',
       title: 'Color'

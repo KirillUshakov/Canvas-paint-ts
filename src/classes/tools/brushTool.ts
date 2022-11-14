@@ -1,8 +1,8 @@
 import Tool from '@/classes/tools/tool';
-import { toolOption } from '@/types/toolOption';
+import { toolAvailableOption } from '@/types/toolTypes';
 
 export default class BrushTool extends Tool {
-  availableOptions: toolOption[] = [
+  availableOptions: toolAvailableOption[] = [
     {
       optionName: 'strokeStyle',
       title: 'Color'

@@ -1,8 +1,7 @@
 import toolInterface from '@/interfaces/toolInterface';
 import board from '@/classes/board/board';
-import { toolOption } from '@/types/toolOption';
-import { setupToolOption } from '@/types/setupToolOption';
-import { availableKeys } from '@/types/availableKeys';
+import { setupToolOption, toolAvailableOption } from '@/types/toolTypes';
+import { availableKeys } from '@/types/paintTypes';
 
 export default class Tool implements toolInterface {
   name:string;
@@ -19,7 +18,8 @@ export default class Tool implements toolInterface {
   }
 
   curCustomOptions: setupToolOption[];
-  availableOptions: toolOption[] = [];
+  availableOptions: toolAvailableOption[];
+
   availableKeys: availableKeys = [];
 
   mouseOverBoard = false;

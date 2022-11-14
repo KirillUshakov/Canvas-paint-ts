@@ -1,4 +1,4 @@
-import { boardOption } from "@/types/boardOption";
+import { boardOption, customBoardOptions } from "@/types/boardTypes";
 
 export default interface board {
   name: string,
@@ -7,11 +7,12 @@ export default interface board {
   undoHistory: Array<ImageData | undefined>,
   redoHistory: Array<ImageData | undefined>,
   maxHistoryLength: number,
+  customOptions: customBoardOptions,
 
   reset ():void,
   getView (): ImageData | undefined,
   saveView (): void,
   undoAction (): void,
   redoAction (): void,
-  setupContextSettings (optionList: boardOption[]): void
+  setPaintSettings (optionList: boardOption[]): void
 }

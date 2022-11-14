@@ -23,7 +23,7 @@
 import { Component, Prop, Ref, Emit, Vue } from 'vue-property-decorator'
 
 import Board from '@/classes/board/board';
-import { BoardData } from '@/types/boardData';
+import { BoardData } from '@/types/boardTypes';
 
 @Component
 export default class PaintBoard extends Vue {

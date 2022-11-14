@@ -1,4 +1,4 @@
-import { availableKeys } from '@/types/availableKeys';
+import { availableKeys } from '@/types/paintTypes';
 import ShapeTool from '../shapeTool';
 
 export default class Circle extends ShapeTool {

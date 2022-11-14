@@ -1,5 +1,5 @@
 import PointTool from '../pointTool';
-import { Pixel } from '@/types/pixel';
+import { Pixel } from '@/types/paintTypes';
 
 export default class Fill extends PointTool {
   // Static variables

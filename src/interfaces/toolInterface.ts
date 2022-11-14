@@ -1,7 +1,6 @@
 import board from '@/classes/board/board';
-import { availableKeys } from '@/types/availableKeys';
-import { setupToolOption } from '@/types/setupToolOption';
-import { toolOption } from '@/types/toolOption';
+import { availableKeys } from '@/types/paintTypes';
+import { setupToolOption, toolAvailableOption } from '@/types/toolTypes';
 
 export default interface tool {
   name: string,
@@ -11,7 +10,7 @@ export default interface tool {
   isDrawing: boolean;
   mouseX: number;
   mouseY: number;
-  availableOptions: toolOption[];
+  availableOptions: toolAvailableOption[];
   curCustomOptions: setupToolOption[];
   availableKeys: availableKeys,
   isShiftKey: boolean;

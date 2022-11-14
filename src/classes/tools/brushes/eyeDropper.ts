@@ -1,5 +1,5 @@
 import BrushTool from '../brushTool';
-import { Pixel } from '@/types/pixel';
+import { Pixel } from '@/types/paintTypes';
 import Board from '@/classes/board/board';
 import Tool from '../tool';
 

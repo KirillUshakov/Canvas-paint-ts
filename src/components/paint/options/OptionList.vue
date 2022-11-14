@@ -1,48 +1,40 @@
 <template>
   <div class="paint-option-list" :key="optionListKey">
-    <div
-      v-for="option in optionList"
+
+    <option-item
+      v-for="option in availableOptionList"
       :key="option.id"
+      :option="option"
 
-      class="option-item"
-    >
-      <div class="option-item__title">{{ option.title }}</div>
-      <div class="option-item__controlls">
-        <range-input-width-count
-          v-if="option.type === 'number'"
-          v-model="option.value"
+      @input="setBoardSettings"
+    />
 
-          :minVal="option.options.min"
-          :maxVal="option.options.max"
-
-          @input="setBoardSettings"
-        />
-        <color-selector
-          v-else-if="option.type === 'color'"
-          v-model="option.value"
-          @input="setBoardSettings"
-        />
-      </div>
-    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { mapGetters } from 'vuex';
 import { Component, Vue } from 'vue-property-decorator';
-import { allOptions } from '@/components/paint/options/config/allOptions'
-import { OptionList } from '@/types/optionList';
-import RangeInputWidthCount from '@/components/paint/options/inputs/RangeInputWidthCount.vue';
-import ColorSelector from '@/components/paint/options/inputs/ColorSelector.vue';
+
+// Options
+import { allOptionList } from '@/components/paint/options/config/optionsConfig'
+
+// Classes / Types
 import Tool from '@/classes/tools/tool';
 import Board from '@/classes/board/board';
-import { boardOption } from '@/types/boardOption';
-import { toolOption } from '@/types/toolOption';
+import { OptionListItem } from '@/types/optionTypes';
+import { toolAvailableOption } from '@/types/toolTypes';
+import { boardOption, customBoardOptions } from '@/types/boardTypes';
+
+// General
+import { copy, isContextOption, isCustomOption } from '@/common/general';
+
+// Components
+import optionItem from '@/components/paint/options/components/OptionItem.vue'
 
 @Component({
   components: {
-    RangeInputWidthCount,
-    ColorSelector
+    optionItem
   },
 
   computed: {
@@ -55,48 +47,69 @@ import { toolOption } from '@/types/toolOption';
 export default class PaintOptionList extends Vue {
   private activeBoard: Board;
   private activeTool: Tool;
-  allOptions: OptionList = allOptions;
+
+  allOptionList: OptionListItem[] = allOptionList;
   optionListKey = 1;
 
   // Computed
-  get activeToolOptions (): toolOption[] {
+  get activeToolOptions (): toolAvailableOption[] {
     return this.activeTool?.availableOptions;
   }
 
-  get optionList (): OptionList {
-    let optionList: OptionList = JSON.parse(JSON.stringify(this.allOptions));
+  get availableOptionList (): OptionListItem[] {
+    if (!this.activeToolOptions || !this.activeToolOptions.length) {
+      return this.getConfiguredOptions(this.allOptionList);
+    }
 
-    if (!this.activeToolOptions) return optionList;
+    const availableOptions = this.allOptionList.filter(option => this.activeToolOptions.find(activeOption => activeOption.optionName === option.optionName));
 
-    const curContext = this.activeBoard.ctx;
-    optionList = optionList.filter(el => this.activeToolOptions.find(option => option.optionName === el.optionName));
-
-    this.activeToolOptions.forEach(option => {
-      const findOption = optionList.find(el => el.optionName === option.optionName);
-      const curValue = curContext ? curContext[option.optionName] : undefined;
-
-      if (findOption) {
-        findOption.title = option.title && option.title.length ? option.title : findOption.title;
-        findOption.value = curValue !== undefined && curValue !== findOption.value ? curValue : findOption.value;
-      }
-    });
-
-    this.optionListKey++;
-    return optionList;
+    return this.getConfiguredOptions(availableOptions, this.activeToolOptions);
   }
 
   // Methods
-  setBoardSettings () {
-    this.activeBoard.setupContextSettings(this.prepareBoardSettings(this.optionList));
+  getConfiguredOptions (optionListInstance: OptionListItem[] = [], activeToolOptions: toolAvailableOption[] = []): OptionListItem[] {
+    const optionList: OptionListItem[] = copy(optionListInstance);
+    const boardContext = this.activeBoard.ctx;
+    const boardCustomOptions: customBoardOptions = this.activeBoard.customOptions;
+
+    // Setup Option values
+    for (const option of optionList) {
+      const existedToolOption = activeToolOptions.find(toolOption => toolOption.optionName === option.optionName);
+      const customOptions = existedToolOption?.options ? Object.assign(option.options, existedToolOption?.options) : option.options;
+      const title = existedToolOption?.title ? existedToolOption.title : option.title;
+      let value = option.value;
+
+      if (boardContext && isContextOption(option.optionName) && boardContext[option.optionName]) {
+        value = boardContext[option.optionName];
+      } else if (boardCustomOptions && isCustomOption(option.optionName) && boardCustomOptions[option.optionName]) {
+        value = boardCustomOptions[option.optionName];
+      }
+
+      option.title = title;
+      option.value = value;
+      option.options = customOptions;
+    }
+
+    optionList.forEach((el, index) => {
+      el.id = index;
+    })
+
+    return optionList;
   }
 
-  prepareBoardSettings (options: OptionList): boardOption[] {
+  setBoardSettings () {
+    const preparedBoardSettings = this.getPreparedBoardSettings(this.availableOptionList);
+
+    this.activeBoard.setPaintSettings(preparedBoardSettings);
+  }
+
+  getPreparedBoardSettings (options: OptionListItem[]): boardOption[] {
     return options.map((el) => {
       return {
-        key: el.optionName,
+        name: el.optionName,
         value: el.value
       }
-    });
+    })
   }
 }
 </script>
@@ -111,10 +124,8 @@ export default class PaintOptionList extends Vue {
     border-bottom: 1px solid $light-grey;
 
     &__title {
-      margin-bottom: 0.7em;
+      margin-bottom: 0.9em;
     }
-
-    &__controlls {}
 
     &__controll-row {
       width: 100%;

@@ -1,6 +1,7 @@
+import { isContextOption, isCustomOption } from '@/common/general';
 import boardInterface from '@/interfaces/boardInterface';
-import { boardOption } from '@/types/boardOption';
-import { OptionList } from '@/types/optionList';
+import { boardOption, customBoardOptions } from '@/types/boardTypes';
+import { customContextOptionType, contextOptionType } from '@/types/optionTypes';
 
 export default class Board implements boardInterface {
   name: string;
@@ -9,6 +10,7 @@ export default class Board implements boardInterface {
   undoHistory: Array<ImageData | undefined> = [];
   redoHistory: Array<ImageData | undefined> = [];
   maxHistoryLength: 30;
+  customOptions: customBoardOptions = {};
 
   constructor (name:string, canvas:HTMLCanvasElement) {
     this.name = name;
@@ -67,12 +69,20 @@ export default class Board implements boardInterface {
     return arr.splice(arr.length - maxLength);
   }
 
-  setupContextSettings (optionList: boardOption[]) {
-    if (this.ctx === null) return;
+  setPaintSettings (optionList: boardOption[]) {
+    if (!this.ctx || !optionList.length) return;
 
-    optionList.forEach(option => {
-      this.ctx![option.key] = option.value;
-    })
+    for (const { name, value } of optionList) {
+      if (isCustomOption(name)) {
+        this.customOptions[name as customContextOptionType] = value;
+        continue;
+      }
+
+      if (isContextOption(name)) {
+        this.ctx[name as contextOptionType] = value;
+        continue;
+      }
+    }
   }
 
   reset () {

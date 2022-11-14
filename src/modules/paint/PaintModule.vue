@@ -36,8 +36,8 @@ import Line from '@/classes/tools/shapes/line';
 import Circle from '@/classes/tools/shapes/circle';
 import Rectangle from '@/classes/tools/shapes/rectangle';
 import Fill from '@/classes/tools/pointTools/fill';
-import { Mouse } from '@/types/mouse';
-import { BoardData } from '@/types/boardData';
+import { Mouse } from '@/types/paintTypes';
+import { BoardData } from '@/types/boardTypes';
 
 @Component({
   components: {
