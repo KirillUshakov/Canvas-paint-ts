@@ -1,5 +1,5 @@
 <template>
-  <div class="option-item__controll-row">
+  <div class="option-item-row option-item__controll-row">
     <div class="left">
       <input
         v-model="curValue"

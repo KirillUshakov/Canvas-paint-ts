@@ -1,5 +1,5 @@
 <template>
-  <div class="option-item__controll-row">
+  <div class="option-item-row option-item__controll-row">
     <div class="left">
       <input
         ref="colorInput"
@@ -108,7 +108,6 @@ export default class ColorSelector extends Vue {
       color: this.color,
       index: -1
     });
-    // this.addPreviousColor(this.color, this.previousColors.findIndex(prevClr => prevClr === this.color));
     this.onChange();
   }
 
@@ -118,7 +117,6 @@ export default class ColorSelector extends Vue {
       color: this.color,
       index: index
     });
-    // this.addPreviousColor(this.color, index);
     this.onChange();
   }
 
